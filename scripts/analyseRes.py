@@ -63,7 +63,68 @@ def analyseOsiris():
     
     wf.close()
 
+def analyseVandal():
+    resD = resDir + 'res_vandal/'
+    resFls = os.listdir(resD)
+    outfile = resDir + 'vandal.txt'
+    wf = open(outfile, 'w', encoding='utf-8')
+
+    for fl in resFls:
+        res = []
+        with open(resD + fl, 'r', encoding='utf-8') as rf:
+            res = rf.readlines()
+        vul = [0 for _ in range(6)]
+        for l in res:
+            l = l.strip()
+            vulKey, vulValue = l.split(':')[0], l.split(':')[1:]
+            if vulValue[0] == '':
+                vul[variables.VANDAL[vulKey]] = 0
+            else:
+                vul[variables.VANDAL[vulKey]] = len(vulValue)
+
+        vul = [str(_) for _ in vul]
+        print(fl + '#' + '#'.join(vul))
+        
+        wf.write(fl + '#' + '#'.join(vul) + '\n')
+    wf.close()
+
+def analyseMythril():
+    resD = resDir + 'res_mythril/'
+    resFls = os.listdir(resD)
+    outfile = resDir + 'mythril.txt'
+    wf = open(outfile, 'w', encoding='utf-8')
+
+    for fl in resFls:
+        # addr = fl
+        res = json.load(open(resD + fl, 'r', encoding='utf-8'))
+        vul = [0 for _ in range(36)]
+        # vul总数量
+        total = 0
+        # flag记录mythril检测是否成功
+        # flag = 'S'
+        # if res['success'] == False:
+        #     flag = "F"
+        for issue in res['issues']:
+            swc = int(issue['swc-id']) - 110
+            vul[swc] += 1
+            total += 1
+        
+        if total == 0:
+            print(fl)
+            wf.write(fl + '\n')
+        else:
+            vul = [str(_) for _ in vul]
+            print(fl + '#' + '#'.join(vul))
+            wf.write(fl + '#' + '#'.join(vul) + '\n')
+
+    wf.close()
+
+def analyseSmtcheck():
+    
 
 if __name__ == "__main__":
-    analyseOyente()
+    # analyseOyente()
     # analyseOsiris()
+    # analyseVandal()
+    # analyseMythril()
+    analyseSmtcheck()
