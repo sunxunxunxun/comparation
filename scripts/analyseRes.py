@@ -120,7 +120,22 @@ def analyseMythril():
     wf.close()
 
 def analyseSmtcheck():
-    
+    resD = resDir + 'res_smartcheck/'
+    resFls = os.listdir(resD)
+    outfile = resDir + 'smartcheck.txt'
+    wf = open(outfile, 'w', encoding='utf-8')
+
+    for fl in resFls:
+        # addr = fl
+        res = []
+        with open(resD + fl, 'r', encoding='utf-8') as rf:
+            res = rf.readlines()
+
+        res = [_.strip() for _ in res if _.find('SOLIDITY') == 0]
+        print(fl + '#' + '#'.join(res))
+        wf.write(fl + '#' + '#'.join(res) + '\n')
+
+    wf.close()
 
 if __name__ == "__main__":
     # analyseOyente()
