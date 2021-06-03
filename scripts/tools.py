@@ -49,11 +49,32 @@ def matchSrcBc():
     print(cnt)
 
 def getLabel():
+    cmnAddrs = open(resDir + 'commonAddrs.txt', 'r', encoding='utf-8').readlines()
+    cmnAddrs = [_.strip() for _ in cmnAddrs]
+    print(len(cmnAddrs))
+    addr2label = pickle.load(open('/home/sunxun/classification/pydata/addr2label.dict', 'rb'))
     
+    wf = open(resDir + 'cmnAddrsWithLabel.txt', 'w', encoding='utf-8')
+    cnt = [0 for range(7)]
+    for addr in cmnAddrs:
+        if addr in addr2label:
+            l = addr + '#' + str(addr2label[addr])
+        else:
+            l = addr + '#-1'
+        print(l)
+        wf.write(addr + '\n')
+    
+    wf.close()
+
 
 
 if __name__ == "__main__":
-    cmnAddrs = getCommonAddr()
-    print(len(cmnAddrs))
+    # 获取5个工具共同分析的合约, 并写入到commonAddrs.txt
+    # cmnAddrs = getCommonAddr()
+    # print(len(cmnAddrs))
     
+    # 获取与bytecode相匹配的srccode文件（因为smartcheck分析的是src，其它分析bytecode
     # matchSrcBc()
+    
+    # 获取commonaddrs的类别label, 并在commonAddrs.txt中显示 
+    getLabel()
